@@ -1,0 +1,24 @@
+<div class="login-container">
+<div class="holder">
+  <div class="box">
+    <form (ngSubmit)="login()" #loginForm="ngForm" autocomplete="off">
+      <h2>Sign in</h2>
+      <div class="inputBox">
+        <input type="email" name="email"  required="required" [(ngModel)]="email">
+        <span>Email</span>
+        <i></i>
+      </div>
+      <div class="inputBox">
+        <input type="password" name="password" required="required" [(ngModel)]="password">
+        <span>Password</span>
+        <i></i>
+      </div>
+      <div class="links">
+        <a [routerLink]="['/auth/forgot-password']">Forgot Password ?</a>
+        <a [routerLink]="['/auth/signup']">Signup</a>
+      </div>
+      <input type="submit" value="Login">
+    </form>
+  </div>
+</div> 
+</div>

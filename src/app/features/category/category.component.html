@@ -1,0 +1,109 @@
+<div class="category-page">
+  <section class="page-header">
+    <div class="page-title-wrap">
+      <div class="page-icon">▦</div>
+      <div>
+        <h1>Categories</h1>
+        <p>Manage book categories. Add, edit, or remove categories easily.</p>
+      </div>
+    </div>
+
+    <button class="primary-btn">+ Add New Category</button>
+  </section>
+
+  <section class="stats-grid">
+    <mat-card class="stat-card" *ngFor="let item of stats">
+      <div class="stat-header">
+        <div class="stat-icon" [style.background]="item.color">{{ item.icon }}</div>
+        <div class="stat-label">{{ item.label }}</div>
+      </div>
+      <div class="stat-value">{{ item.value }}</div>
+      <div class="stat-note">{{ item.note }}</div>
+    </mat-card>
+  </section>
+
+  <section class="content-grid">
+    <mat-card class="table-panel">
+      <div class="table-header">
+        <h2>Categories List</h2>
+        <div class="search-box">
+          <span>⌕</span>
+          <input type="text" placeholder="Search categories..." />
+        </div>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Category Name</th>
+              <th>Description</th>
+              <th>Books Count</th>
+              <th>Status</th>
+              <th>Created At</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let category of categories; let i = index">
+              <td>{{ category.id }}</td>
+              <td>
+                <div class="category-name-cell">
+                  <span class="category-icon" [style.background]="category.iconBg">{{ category.icon }}</span>
+                  <span>{{ category.name }}</span>
+                </div>
+              </td>
+              <td>{{ category.description }}</td>
+              <td>{{ category.booksCount }}</td>
+              <td>
+                <span class="status-badge" [ngClass]="category.status.toLowerCase()">
+                  {{ category.status }}
+                </span>
+              </td>
+              <td>{{ category.createdAt }}</td>
+              <td>
+                <div class="action-icons">
+                  <button class="icon-btn edit" aria-label="Edit">✎</button>
+                  <button class="icon-btn delete" aria-label="Delete">🗑</button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="table-footer">
+        Showing 1 to 8 of 8 categories
+      </div>
+    </mat-card>
+
+    <aside class="side-panel">
+      <mat-card class="info-card">
+        <div class="info-icon">ℹ️</div>
+        <p>Categories help you organize your books and make it easier for users to find what they need.</p>
+      </mat-card>
+
+      <div class="quick-actions">
+        <h3>Quick Actions</h3>
+        <div class="action-grid">
+          <button class="mini-btn primary">+ Add Category</button>
+          <button class="mini-btn">✎ Edit Category</button>
+          <button class="mini-btn danger">🗑 Delete Category</button>
+          <button class="mini-btn">↻ Refresh</button>
+        </div>
+      </div>
+
+      <div class="tree-card">
+        <h3>Category Tree</h3>
+        <ul>
+          <li *ngFor="let item of categoryTree">
+            <span>›</span>
+            <span class="tree-name">{{ item.name }}</span>
+            <span class="tree-count">{{ item.count }}</span>
+          </li>
+        </ul>
+      </div>
+    </aside>
+  </section>
+</div>

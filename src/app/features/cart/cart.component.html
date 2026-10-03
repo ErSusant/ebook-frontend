@@ -1,0 +1,132 @@
+<div class="cart-page">
+  <header class="page-header">
+    <div class="title-wrap">
+      <div class="icon-badge">
+        <mat-icon>shopping_cart</mat-icon>
+      </div>
+      <div>
+        <h1>Your Cart</h1>
+        <p>Review your selected books before checkout.</p>
+      </div>
+    </div>
+
+    <button mat-stroked-button color="primary" class="clear-cart" (click)="clearCart()">
+      <mat-icon>delete_outline</mat-icon>
+      Clear Cart
+    </button>
+  </header>
+
+  <div class="content-grid">
+    <section class="cart-panel">
+      <div class="panel-title">Cart Items ({{ items.length }})</div>
+
+      <div class="table-header">
+        <span class="header-select"> </span>
+        <span class="header-book">Book</span>
+        <span>Title</span>
+        <span>Price</span>
+        <span>Quantity</span>
+        <span>Total</span>
+        <span>Action</span>
+      </div>
+
+      <div class="cart-row" *ngFor="let item of items; trackBy: trackByItem">
+        <div class="select-cell">
+          <input type="checkbox" [checked]="item.selected" (change)="toggleSelected(item)" />
+        </div>
+
+        <div class="cover-cell">
+          <div class="book-cover cover-{{ item.cover }}">
+            <span>Book</span>
+          </div>
+        </div>
+
+        <div class="title-cell">
+          <div class="book-title">{{ item.title }}</div>
+          <div class="book-author">{{ item.author }}</div>
+        </div>
+
+        <div class="price-cell">₹ {{ item.price }}</div>
+
+        <div class="qty-cell">
+          <button mat-icon-button class="qty-button" aria-label="Decrease quantity" (click)="updateQuantity(item, -1)">
+            <mat-icon>remove</mat-icon>
+          </button>
+          <span class="qty-number">{{ item.quantity }}</span>
+          <button mat-icon-button class="qty-button" aria-label="Increase quantity" (click)="updateQuantity(item, 1)">
+            <mat-icon>add</mat-icon>
+          </button>
+        </div>
+
+        <div class="total-cell">₹ {{ item.total }}</div>
+
+        <div class="action-cell">
+          <button mat-icon-button class="delete-button" aria-label="Delete item" (click)="removeItem(item.id)">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </div>
+      </div>
+
+      <div class="table-footer">
+        <div class="selection-indicator">
+          <mat-icon>check_circle</mat-icon>
+          {{ selectedCount }} items selected
+        </div>
+
+        <button mat-stroked-button color="primary" class="update-button">
+          <mat-icon>sync</mat-icon>
+          Update Cart
+        </button>
+      </div>
+    </section>
+
+    <aside class="summary-panel">
+      <h3>Order Summary</h3>
+
+      <div class="summary-row total-row">
+        <span>Subtotal ({{ items.length }} items)</span>
+        <strong>₹ {{ subtotal }}</strong>
+      </div>
+
+      <div class="summary-row">
+        <span>Discount</span>
+        <span>- ₹ {{ discount }}</span>
+      </div>
+
+      <div class="summary-row">
+        <span>Shipping Charge</span>
+        <span>₹ {{ shipping }}</span>
+      </div>
+
+      <div class="summary-total">
+        <span>Total Amount</span>
+        <strong>₹ {{ total }}</strong>
+      </div>
+
+      <button mat-flat-button color="primary" class="checkout-button">
+        <mat-icon>lock</mat-icon>
+        Proceed to Checkout
+      </button>
+
+      <div class="info-box shipping-box">
+        <div class="info-icon">
+          <mat-icon>local_shipping</mat-icon>
+        </div>
+        <div>
+          <strong>Free Shipping</strong>
+          <span>On orders above ₹ 999</span>
+        </div>
+      </div>
+
+      <div class="info-box secure-box">
+        <div class="info-icon">
+          <mat-icon>verified_user</mat-icon>
+        </div>
+        <div>
+          <strong>Secure Payment</strong>
+          <span>Your information is safe with us</span>
+        </div>
+      </div>
+    </aside>
+  </div>
+</div>

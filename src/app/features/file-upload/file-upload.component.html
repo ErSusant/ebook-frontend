@@ -1,0 +1,8 @@
+<mat-card>
+  <h2>Upload Files</h2>
+  <div class="upload-shell">
+    <input type="file" (change)="onFileChange($event)" />
+    <div *ngIf="selectedFileName">Selected file: {{ selectedFileName }}</div>
+    <button mat-flat-button color="primary">Upload</button>
+  </div>
+</mat-card>

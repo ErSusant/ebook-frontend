@@ -1,0 +1,117 @@
+<div class="payments-page">
+  <header class="page-header">
+    <div class="page-title-wrap">
+      <div class="page-icon">💳</div>
+      <div>
+        <h1>Payments</h1>
+        <p>Track and manage all payment transactions in your store.</p>
+      </div>
+    </div>
+
+    <button class="date-pill">📅 Sep 1, 2025 - Sep 30, 2025 ▾</button>
+  </header>
+
+  <section class="stats-grid">
+    <mat-card class="stat-card" *ngFor="let item of stats">
+      <div class="stat-header">
+        <div class="stat-icon" [style.background]="item.color" [style.color]="item.accent">{{ item.icon }}</div>
+        <div class="stat-label">{{ item.label }}</div>
+      </div>
+      <div class="stat-value">{{ item.value }}</div>
+      <div class="stat-note">{{ item.note }}</div>
+    </mat-card>
+  </section>
+
+  <section class="content-grid">
+    <div class="payments-panel">
+      <div class="panel-header">
+        <h2>Recent Payments</h2>
+        <button class="link-btn">View All →</button>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Order ID</th>
+              <th>Customer Name</th>
+              <th>Amount</th>
+              <th>Payment Method</th>
+              <th>Status</th>
+              <th>Payment Date</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let payment of payments; let i = index">
+              <td>{{ i + 1 }}</td>
+              <td>{{ payment.id }}</td>
+              <td>{{ payment.customerName }}</td>
+              <td>₹ {{ payment.amount }}</td>
+              <td>
+                <span class="method-badge" [style.background]="payment.methodColor + '22'" [style.color]="payment.methodColor">
+                  {{ payment.methodBadge }}
+                </span>
+                {{ payment.method }}
+              </td>
+              <td>
+                <span class="status-pill" [ngClass]="getStatusClass(payment.status)">{{ payment.status }}</span>
+              </td>
+              <td>{{ payment.paymentDate }}</td>
+              <td><button class="view-btn">👁️ View</button></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="table-footer">Showing 1 to 8 of 8 payments</div>
+    </div>
+
+    <aside class="side-panel">
+      <div class="mini-panel analytics-panel">
+        <div class="panel-header analytics-header">
+          <h3>Payment Analytics</h3>
+          <div class="toggle-group">
+            <button class="toggle active">Daily</button>
+            <button class="toggle">Weekly</button>
+            <button class="toggle">Monthly</button>
+          </div>
+        </div>
+
+        <div class="chart-box">
+          <div class="chart-lines"></div>
+          <div class="chart-line"></div>
+        </div>
+      </div>
+
+      <div class="mini-panel methods-panel">
+        <h3>Payment Methods</h3>
+
+        <div class="donut-wrap">
+          <div class="donut-chart">
+            <div class="donut-center">
+              <strong>12</strong>
+              <span>Total Payments</span>
+            </div>
+          </div>
+        </div>
+
+        <ul class="method-list">
+          <li *ngFor="let method of paymentMethods">
+            <div class="method-row">
+              <span class="dot" [style.background]="method.color"></span>
+              <span class="label">{{ method.label }}</span>
+            </div>
+            <span class="value">{{ method.percent }}</span>
+          </li>
+        </ul>
+      </div>
+
+      <div class="mini-panel note-panel">
+        <div class="info-mark">ℹ️</div>
+        <p>All payments are secure and processed through trusted payment gateways.</p>
+      </div>
+    </aside>
+  </section>
+</div>

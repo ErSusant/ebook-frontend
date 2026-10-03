@@ -1,0 +1,145 @@
+<div class="wishlist-page">
+  <header class="page-header">
+    <div class="title-wrap">
+      <div class="icon-badge">
+        <mat-icon>favorite</mat-icon>
+      </div>
+      <div>
+        <h1>Wishlist</h1>
+        <p>Your saved books. Keep track of what you love.</p>
+      </div>
+    </div>
+
+    <button mat-stroked-button color="primary" class="view-cart-btn">
+      <mat-icon>shopping_cart</mat-icon>
+      View Cart (4)
+    </button>
+  </header>
+
+  <div class="content-grid">
+    <section class="wishlist-panel">
+      <div class="panel-topbar">
+        <div class="title-inline">Wishlist ({{ wishlist.length }})</div>
+
+        <div class="search-box">
+          <mat-icon>search</mat-icon>
+          <input type="text" placeholder="Search by book title, author..." />
+        </div>
+      </div>
+
+      <div class="table-header">
+        <span class="checkbox-col"> </span>
+        <span class="book-col">Book</span>
+        <span>Title</span>
+        <span>Author</span>
+        <span>Price</span>
+        <span>Added On</span>
+        <span>Stock Status</span>
+        <span>Actions</span>
+      </div>
+
+      <div class="wishlist-row" *ngFor="let item of wishlist; trackBy: trackByItem">
+        <div class="select-cell">
+          <input type="checkbox" [checked]="item.selected" (change)="toggleSelection(item)" />
+        </div>
+
+        <div class="cover-cell">
+          <div [ngClass]="'book-cover cover-' + item.cover">
+            <span>{{ item.title.split(' ')[0] }}</span>
+          </div>
+        </div>
+
+        <div class="title-cell">
+          <div class="book-title">{{ item.title }}</div>
+          <div class="book-subtitle">{{ item.subtitle }}</div>
+        </div>
+
+        <div class="author-cell">{{ item.author }}</div>
+        <div class="price-cell">₹ {{ item.price }}</div>
+        <div class="date-cell">{{ item.addedOn }}</div>
+
+        <div class="status-cell">
+          <span class="stock-badge" [ngClass]="item.stock === 'Low Stock' ? 'low-stock' : 'in-stock'">
+            {{ item.stock }}
+          </span>
+        </div>
+
+        <div class="action-cell">
+          <button mat-mini-fab color="primary" class="action-button cart-btn" aria-label="Add to cart">
+            <mat-icon>shopping_cart</mat-icon>
+          </button>
+          <button mat-mini-fab class="action-button delete-btn" aria-label="Delete from wishlist">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </div>
+      </div>
+
+      <div class="table-footer">
+        <div class="selection-indicator">
+          <mat-icon>check_circle</mat-icon>
+          {{ selectedCount }} items selected
+        </div>
+
+        <div class="footer-actions">
+          <button mat-flat-button color="warn" class="remove-selected-btn" (click)="removeSelected()">
+            <mat-icon>delete</mat-icon>
+            Remove Selected
+          </button>
+          <button mat-flat-button color="primary" class="add-cart-btn" (click)="addToCart()">
+            <mat-icon>add_shopping_cart</mat-icon>
+            Add to Cart
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <aside class="summary-panel">
+      <div class="summary-title">
+        <mat-icon>favorite</mat-icon>
+        <h3>Wishlist Summary</h3>
+      </div>
+
+      <div class="summary-stats">
+        <div class="stat-box">
+          <div class="stat-value">{{ wishlist.length }}</div>
+          <div class="stat-label">Total Items</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-value">₹ {{ totalValue }}</div>
+          <div class="stat-label">Total Value</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-value">{{ inStockCount }}</div>
+          <div class="stat-label">In Stock</div>
+        </div>
+      </div>
+
+      <div class="recently-added">
+        <h4>Recently Added</h4>
+
+        <div class="recent-item" *ngFor="let item of wishlist.slice(0, 3)">
+          <div [ngClass]="'recent-cover cover-' + item.cover">
+            <span>{{ item.title.split(' ')[0] }}</span>
+          </div>
+          <div class="recent-info">
+            <div class="recent-title">{{ item.title }}</div>
+            <div class="recent-meta">₹ {{ item.price }} · {{ item.addedOn }}</div>
+          </div>
+          <span class="recent-status" [ngClass]="item.stock === 'Low Stock' ? 'low-stock' : 'in-stock'">
+            {{ item.stock }}
+          </span>
+        </div>
+      </div>
+
+      <div class="empty-box">
+        <mat-icon>info</mat-icon>
+        <div>
+          <strong>Good to Know</strong>
+          <p>Items in your wishlist are kept for future purchase.<br />You can move them to cart anytime!</p>
+        </div>
+      </div>
+    </aside>
+  </div>
+</div>
+
+ 

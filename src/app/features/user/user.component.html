@@ -1,0 +1,12 @@
+<mat-card>
+  <h2>Users</h2>
+
+  <mat-list>
+    @for (user of (users$ | async) ?? []; track user.id) {
+      <mat-list-item>
+        <div mat-line>{{ user.name }}</div>
+        <div mat-line class="secondary">{{ user.email }}</div>
+      </mat-list-item>
+    }
+  </mat-list>
+</mat-card>

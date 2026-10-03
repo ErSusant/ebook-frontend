@@ -1,0 +1,109 @@
+<div class="books-shell">
+  <section class="page-header">
+    <div class="page-title-wrap">
+      <div class="page-icon">📚</div>
+      <div>
+        <h1>Books</h1>
+        <p>Manage all books in your store. Add, update, or remove books easily.</p>
+      </div>
+    </div>
+
+    <button class="primary-btn">+ Add New Book</button>
+  </section>
+
+  <section class="toolbar-row">
+    <div class="search-box">
+      <span>🔎</span>
+      <input type="text" placeholder="Search by title, author, or ISBN..." />
+    </div>
+
+    <div class="filter-group">
+      <select>
+        <option>All Categories</option>
+      </select>
+      <select>
+        <option>All Status</option>
+      </select>
+      <button class="primary-btn small-btn">Search</button>
+    </div>
+  </section>
+
+  <section class="stats-grid">
+    <mat-card class="stat-card" *ngFor="let item of stats">
+      <div class="stat-header">
+        <div class="stat-icon" [style.background]="item.color">{{ item.icon }}</div>
+        <div class="stat-label">{{ item.label }}</div>
+      </div>
+      <div class="stat-value">{{ item.value }}</div>
+      <div class="stat-note">{{ item.note }}</div>
+    </mat-card>
+  </section>
+
+  <section class="table-panel">
+    <div class="table-head">
+      <h2>Books List</h2>
+      <select class="sort-select">
+        <option>Sort by: Newest First</option>
+      </select>
+    </div>
+
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Book Cover</th>
+            <th>Title</th>
+            <th>Author</th>
+            <th>Category</th>
+            <th>Price</th>
+            <th>Stock</th>
+            <th>Status</th>
+            <th>Created At</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let book of books; let i = index">
+            <td>{{ i + 1 }}</td>
+            <td>
+              <div class="cover-box">📘</div>
+            </td>
+            <td>
+              <div class="book-title-wrap">
+                <strong>{{ book.title }}</strong>
+                <small>ISBN: {{ book.id }}</small>
+              </div>
+            </td>
+            <td>{{ book.author }}</td>
+            <td><span class="tag tag-category">{{ book.category }}</span></td>
+            <td>₹ {{ book.price }}</td>
+            <td>In Stock</td>
+            <td><span class="status status-in">In Stock</span></td>
+            <td>28 Sep 2025</td>
+            <td>
+              <div class="action-cell">
+                <button class="action-btn view">👁️</button>
+                <button class="action-btn edit">✏️</button>
+                <button class="action-btn delete">🗑️</button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="pagination-row">
+      <span>Showing 1 to 5 of 24 books</span>
+      <div class="pager">
+        <button>‹</button>
+        <button class="active">1</button>
+        <button>2</button>
+        <button>3</button>
+        <button>4</button>
+        <button>5</button>
+        <button>›</button>
+      </div>
+    </div>
+  </section>
+</div>

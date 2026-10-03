@@ -1,0 +1,66 @@
+<div class="search-page">
+  <header class="page-header">
+    <div class="title-wrap">
+      <div class="icon-badge">
+        <mat-icon>search</mat-icon>
+      </div>
+      <div>
+        <h1>Search Books</h1>
+        <p>Find the perfect book by title, author, or category.</p>
+      </div>
+    </div>
+  </header>
+
+  <section class="search-shell">
+    <div class="search-bar">
+      <mat-form-field appearance="outline" class="search-field">
+        <mat-label>Search books, authors, or categories</mat-label>
+        <input matInput [(ngModel)]="query" placeholder="Search books, authors, or categories" />
+        <mat-icon matSuffix>search</mat-icon>
+      </mat-form-field>
+
+      <button mat-flat-button color="primary" class="search-button" type="button" (click)="onSearch()">
+        Search
+      </button>
+    </div>
+
+    <div class="filter-row">
+      <button mat-stroked-button class="filter-pill active">All</button>
+      <button mat-stroked-button class="filter-pill">Programming</button>
+      <button mat-stroked-button class="filter-pill">Java</button>
+      <button mat-stroked-button class="filter-pill">Backend</button>
+      <button mat-stroked-button class="filter-pill">Design</button>
+    </div>
+
+    <div class="results-header">
+      <h2>Results</h2>
+      <span>{{ filteredBooks.length }} books found</span>
+    </div>
+
+    <div class="book-grid">
+      <mat-card class="book-card" *ngFor="let book of filteredBooks">
+        <div class="book-cover cover-{{ book.cover }}">
+          <span>{{ book.title.split(' ')[0] }}</span>
+        </div>
+
+        <div class="book-badge">{{ book.badge }}</div>
+
+        <div class="book-content">
+          <h3>{{ book.title }}</h3>
+          <div class="meta">{{ book.author }}</div>
+          <div class="meta secondary">{{ book.category }}</div>
+
+          <div class="rating-row">
+            <span class="star">★</span>
+            <span>{{ book.rating }}</span>
+          </div>
+
+          <div class="price-row">
+            <strong>₹ {{ book.price }}</strong>
+            <button mat-flat-button color="primary" class="mini-btn">Add to Cart</button>
+          </div>
+        </div>
+      </mat-card>
+    </div>
+  </section>
+</div>

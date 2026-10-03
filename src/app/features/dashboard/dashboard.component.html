@@ -1,0 +1,104 @@
+<div class="dashboard-shell">
+  <section class="welcome-bar">
+    <div class="welcome-user">
+      <div class="avatar">S</div>
+      <div>
+        <h1>Welcome back, {{ username }}!</h1>
+        <p>Here's what happening with your e-book store today.</p>
+      </div>
+    </div>
+
+    <div class="date-box">
+      <span class="calendar">📅</span>
+      <div>
+        <div class="date-text">{{ today }}</div>
+        <div class="status-text">Happy Reading!</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="stats-grid">
+    <mat-card class="stat-card" *ngFor="let item of stats">
+      <div class="stat-header">
+        <div class="stat-icon" [style.background]="item.color">{{ item.icon }}</div>
+        <div class="stat-label">{{ item.label }}</div>
+      </div>
+
+      <div class="stat-value">{{ item.value }}</div>
+      <div class="stat-note">{{ item.note }}</div>
+    </mat-card>
+  </section>
+
+  <section class="bottom-grid">
+    <mat-card class="panel-card">
+      <div class="panel-header">
+        <h3>Recent Orders</h3>
+        <a href="javascript:void(0)">View All →</a>
+      </div>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Order ID</th>
+            <th>Book</th>
+            <th>Amount</th>
+            <th>Status</th>
+            <th>Date</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let order of recentOrders">
+            <td>{{ order.id }}</td>
+            <td>{{ order.book }}</td>
+            <td>{{ order.amount }}</td>
+            <td><span class="badge" [ngClass]="order.status.toLowerCase()">{{ order.status }}</span></td>
+            <td>{{ order.date }}</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="panel-footer">
+        <span>Total Orders: 12</span>
+        <a href="javascript:void(0)">View All Orders →</a>
+      </div>
+    </mat-card>
+
+    <mat-card class="panel-card">
+      <div class="panel-header">
+        <h3>Recommended Books</h3>
+        <a href="javascript:void(0)">View All →</a>
+      </div>
+
+      <div class="book-grid">
+        <div class="book-item" *ngFor="let book of recommendedBooks">
+          <div class="book-cover" [style.background]="book.accent">
+            <span>{{ book.title }}</span>
+          </div>
+          <div class="book-name">{{ book.title }}</div>
+          <div class="book-author">{{ book.author }}</div>
+          <div class="book-row">
+            <span class="price">{{ book.price }}</span>
+            <span class="rating">⭐ {{ book.rating }}</span>
+          </div>
+        </div>
+      </div>
+    </mat-card>
+
+    <mat-card class="panel-card">
+      <div class="panel-header">
+        <h3>Notifications &amp; Activity</h3>
+        <a href="javascript:void(0)">View All →</a>
+      </div>
+
+      <div class="notification-list">
+        <div class="notification-item" *ngFor="let item of notifications">
+          <div class="notify-icon" [ngClass]="item.tone">{{ item.icon }}</div>
+          <div class="notify-body">
+            <div class="notify-text">{{ item.title }}</div>
+            <div class="notify-time">{{ item.time }}</div>
+          </div>
+        </div>
+      </div>
+    </mat-card>
+  </section>
+</div>

@@ -1,0 +1,17 @@
+<mat-toolbar *ngIf="showHeader" color="primary">
+  <span>{{ title }}</span>
+  <span class="spacer"></span>
+  <button mat-button routerLink="/dashboard">Dashboard</button>
+  <button mat-button routerLink="/books">Books</button>
+  <button mat-button routerLink="/categories">Categories</button>
+  <button mat-button routerLink="/orders">Orders</button>
+  <button mat-button routerLink="/payments">Payments</button>
+  <button mat-button routerLink="/reviews">Reviews</button>
+  <button mat-button routerLink="/cart">Cart</button>
+  <button mat-button routerLink="/wishlist">Wishlist</button>
+  <button mat-button (click)="logout()">Logout</button>
+</mat-toolbar>
+
+<main [class.auth-shell]="!showHeader">
+  <router-outlet></router-outlet>
+</main>
