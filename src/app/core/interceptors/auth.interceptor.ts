@@ -9,11 +9,13 @@ export class AuthInterceptor implements HttpInterceptor {
 
   intercept(req: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
     const token = this.authService.getToken();
-    // Do not attach Authorization header for auth endpoints that rely on cookies
     const url = (req.url || '').toLowerCase();
-    const isAuthEndpoint = url.includes('/auth/login') || url.includes('/auth/refresh') || url.includes('/auth/');
 
-    if (!token || isAuthEndpoint) {
+    // Skip auth headers for endpoints that are public or do not use JWT auth
+    const isAuthEndpoint = url.includes('/auth/login') || url.includes('/auth/refresh') || url.includes('/auth/');
+    const isPublicBookCreateEndpoint = url.includes('/books/create');
+
+    if (!token || isAuthEndpoint || isPublicBookCreateEndpoint) {
       return next.handle(req);
     }
 

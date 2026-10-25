@@ -8,7 +8,7 @@
       </div>
     </div>
 
-    <button class="primary-btn">+ Add New Category</button>
+    <button class="primary-btn" type="button" (click)="openAddCategoryModal()">+ Add New Category</button>
   </section>
 
   <section class="stats-grid">
@@ -28,9 +28,12 @@
         <h2>Categories List</h2>
         <div class="search-box">
           <span>⌕</span>
-          <input type="text" placeholder="Search categories..." />
+          <input type="text" placeholder="Search categories..." [(ngModel)]="searchTerm" (input)="onSearchChange()" />
         </div>
       </div>
+
+      <div *ngIf="errorMessage" class="form-message error">{{ errorMessage }}</div>
+      <div *ngIf="successMessage" class="form-message success">{{ successMessage }}</div>
 
       <div class="table-wrap">
         <table>
@@ -64,8 +67,8 @@
               <td>{{ category.createdAt }}</td>
               <td>
                 <div class="action-icons">
-                  <button class="icon-btn edit" aria-label="Edit">✎</button>
-                  <button class="icon-btn delete" aria-label="Delete">🗑</button>
+                  <button class="icon-btn edit" aria-label="Edit" type="button" (click)="openEditCategory(category.id)">✎</button>
+                  <button class="icon-btn delete" aria-label="Delete" type="button" (click)="deleteCategory(category.id)">🗑</button>
                 </div>
               </td>
             </tr>
@@ -73,8 +76,11 @@
         </table>
       </div>
 
-      <div class="table-footer">
-        Showing 1 to 8 of 8 categories
+      <div class="table-footer" *ngIf="categories.length">
+        Showing {{ categories.length }} categories
+      </div>
+      <div class="table-footer" *ngIf="!categories.length">
+        No categories found.
       </div>
     </mat-card>
 
@@ -87,10 +93,10 @@
       <div class="quick-actions">
         <h3>Quick Actions</h3>
         <div class="action-grid">
-          <button class="mini-btn primary">+ Add Category</button>
-          <button class="mini-btn">✎ Edit Category</button>
-          <button class="mini-btn danger">🗑 Delete Category</button>
-          <button class="mini-btn">↻ Refresh</button>
+          <button class="mini-btn primary" type="button" (click)="openAddCategoryModal()">+ Add Category</button>
+          <button class="mini-btn" type="button" (click)="openEditCategory(categories[0]?.id ?? 0)" [disabled]="!categories.length">✎ Edit Category</button>
+          <button class="mini-btn danger" type="button" (click)="deleteCategory(categories[0]?.id ?? 0)" [disabled]="!categories.length">🗑 Delete Category</button>
+          <button class="mini-btn" type="button" (click)="refreshCategories()">↻ Refresh</button>
         </div>
       </div>
 
@@ -106,4 +112,39 @@
       </div>
     </aside>
   </section>
+</div>
+
+<div class="modal-overlay" *ngIf="showCategoryModal" (click)="showCategoryModal = false">
+  <div class="modal-card" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h3>{{ modalTitle }}</h3>
+      <button type="button" class="close-btn" (click)="showCategoryModal = false">✕</button>
+    </div>
+
+    <form class="category-form" (ngSubmit)="saveCategory()">
+      <div class="form-row">
+        <label>Category name</label>
+        <input type="text" [(ngModel)]="categoryForm.name" name="name" required />
+      </div>
+
+      <div class="form-row">
+        <label>Description</label>
+        <textarea rows="4" [(ngModel)]="categoryForm.description" name="description"></textarea>
+      </div>
+
+      <div class="form-row checkbox-row">
+        <label>
+          <input type="checkbox" [(ngModel)]="categoryForm.active" name="active" />
+          Active category
+        </label>
+      </div>
+
+      <div class="modal-actions">
+        <button type="button" class="secondary-btn" (click)="showCategoryModal = false">Cancel</button>
+        <button type="submit" class="primary-btn" [disabled]="isSubmitting">
+          {{ isSubmitting ? 'Saving...' : (selectedCategoryId ? 'Update Category' : 'Add Category') }}
+        </button>
+      </div>
+    </form>
+  </div>
 </div>

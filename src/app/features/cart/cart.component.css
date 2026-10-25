@@ -235,6 +235,7 @@
 }
 
 .update-button {
+  grid-column: 7;
   justify-self: end;
   border-radius: 10px;
   font-weight: 600;

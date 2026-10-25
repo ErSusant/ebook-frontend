@@ -8,23 +8,29 @@
       </div>
     </div>
 
-    <button class="primary-btn">+ Add New Book</button>
+    <button class="primary-btn" type="button" (click)="openCreateBookModal()">+ Add New Book</button>
   </section>
 
   <section class="toolbar-row">
     <div class="search-box">
       <span>🔎</span>
-      <input type="text" placeholder="Search by title, author, or ISBN..." />
+      <input type="text" placeholder="Search by title, author, or ISBN..." [value]="searchText" (input)="searchText = $any($event.target).value" (keyup.enter)="searchBooks()" />
     </div>
 
     <div class="filter-group">
-      <select>
-        <option>All Categories</option>
+      <select [value]="selectedCategory" (change)="onCategoryChange($event)">
+        <option value="all">All Categories</option>
+        <option value="1">Category 1</option>
+        <option value="2">Category 2</option>
+        <option value="3">Category 3</option>
       </select>
-      <select>
-        <option>All Status</option>
+      <select [value]="selectedStatus" (change)="onStatusChange($event)">
+        <option value="all">All Status</option>
+        <option value="In Stock">In Stock</option>
+        <option value="Low Stock">Low Stock</option>
+        <option value="Out of Stock">Out of Stock</option>
       </select>
-      <button class="primary-btn small-btn">Search</button>
+      <button class="primary-btn small-btn" type="button" (click)="searchBooks()">Search</button>
     </div>
   </section>
 
@@ -42,8 +48,8 @@
   <section class="table-panel">
     <div class="table-head">
       <h2>Books List</h2>
-      <select class="sort-select">
-        <option>Sort by: Newest First</option>
+      <select class="sort-select" [value]="selectedSort" (change)="onSortChange($event)">
+        <option *ngFor="let option of sortOptions" [value]="option.value">Sort by: {{ option.label }}</option>
       </select>
     </div>
 
@@ -51,7 +57,7 @@
       <table>
         <thead>
           <tr>
-            <th>#</th>
+            <th>Sl No.</th>
             <th>Book Cover</th>
             <th>Title</th>
             <th>Author</th>
@@ -64,28 +70,28 @@
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let book of books; let i = index">
-            <td>{{ i + 1 }}</td>
+          <tr *ngFor="let book of paginatedBooks; let i = index">
+            <td>{{ (currentPage - 1) * pageSize + i + 1 }}</td>
             <td>
               <div class="cover-box">📘</div>
             </td>
             <td>
               <div class="book-title-wrap">
                 <strong>{{ book.title }}</strong>
-                <small>ISBN: {{ book.id }}</small>
+                <small>ISBN: {{ book.isbn || book.id }}</small>
               </div>
             </td>
-            <td>{{ book.author }}</td>
-            <td><span class="tag tag-category">{{ book.category }}</span></td>
+            <td>{{ book.authorId || 'N/A' }}</td>
+            <td><span class="tag tag-category">{{ book.categoryId || 'General' }}</span></td>
             <td>₹ {{ book.price }}</td>
             <td>In Stock</td>
             <td><span class="status status-in">In Stock</span></td>
-            <td>28 Sep 2025</td>
+            <td>{{ book.publicationDate || 'N/A' }}</td>
             <td>
               <div class="action-cell">
-                <button class="action-btn view">👁️</button>
-                <button class="action-btn edit">✏️</button>
-                <button class="action-btn delete">🗑️</button>
+                <button class="action-btn view" type="button" title="View" (click)="viewBook(book.id)">👁️</button>
+                <button class="action-btn edit" type="button" title="Edit" (click)="editBook(book.id)">✏️</button>
+                <button class="action-btn delete" type="button" title="Delete" (click)="deleteBook(book.id)">🗑️</button>
               </div>
             </td>
           </tr>
@@ -94,16 +100,158 @@
     </div>
 
     <div class="pagination-row">
-      <span>Showing 1 to 5 of 24 books</span>
+      <span>{{ showingText }}</span>
       <div class="pager">
-        <button>‹</button>
-        <button class="active">1</button>
-        <button>2</button>
-        <button>3</button>
-        <button>4</button>
-        <button>5</button>
-        <button>›</button>
+        <button type="button" (click)="previousPage()" [disabled]="currentPage === 1">‹</button>
+        <button *ngFor="let page of pageNumbers" type="button" [class.active]="page === currentPage" (click)="currentPage = page">{{ page }}</button>
+        <button type="button" (click)="nextPage()" [disabled]="currentPage === totalPages">›</button>
       </div>
     </div>
   </section>
+</div>
+
+<div class="modal-backdrop" *ngIf="showBookModal" (click)="closeBookModal()">
+  <div class="book-modal" (click)="$event.stopPropagation()" role="dialog" aria-modal="true" aria-labelledby="book-modal-title">
+    <div class="modal-header">
+      <h3 id="book-modal-title">{{ modalTitle }}</h3>
+      <button class="close-btn" type="button" (click)="closeBookModal()">✕</button>
+    </div>
+
+    <form [formGroup]="bookForm" (ngSubmit)="submitBookForm()" class="book-form">
+      <div class="form-grid">
+        <label>
+          <span>Title</span>
+          <input formControlName="title" type="text" placeholder="Enter book title" [readonly]="isReadOnlyMode" [class.invalid-input]="bookForm.get('title')?.touched && bookForm.get('title')?.invalid" />
+          <small class="field-error" *ngIf="bookForm.get('title')?.touched && bookForm.get('title')?.invalid">
+            {{ getFieldError('title') }}
+          </small>
+        </label>
+
+        <label>
+          <span>Subtitle</span>
+          <input formControlName="subtitle" type="text" placeholder="Optional subtitle" [readonly]="isReadOnlyMode" />
+        </label>
+
+        <label>
+          <span>Edition</span>
+          <input formControlName="edition" type="text" [readonly]="isReadOnlyMode" />
+        </label>
+
+        <label>
+          <span>Author ID</span>
+          <input formControlName="authorId" type="number" [readonly]="isReadOnlyMode" />
+        </label>
+
+        <label>
+          <span>Publisher ID</span>
+          <input formControlName="publisherId" type="number" [readonly]="isReadOnlyMode" />
+        </label>
+
+        <label>
+          <span>Category ID</span>
+          <input formControlName="categoryId" type="number" [readonly]="isReadOnlyMode" />
+        </label>
+
+        <label>
+          <span>Sub Category ID</span>
+          <input formControlName="subCategoryId" type="number" [readonly]="isReadOnlyMode" />
+        </label>
+
+        <label>
+          <span>Language</span>
+          <input formControlName="language" type="text" placeholder="English" [readonly]="isReadOnlyMode" />
+        </label>
+
+        <label>
+          <span>Pages</span>
+          <input formControlName="pages" type="number" [readonly]="isReadOnlyMode" />
+        </label>
+
+        <label>
+          <span>Price</span>
+          <input formControlName="price" type="number" step="0.01" [readonly]="isReadOnlyMode" [class.invalid-input]="bookForm.get('price')?.touched && bookForm.get('price')?.invalid" />
+          <small class="field-error" *ngIf="bookForm.get('price')?.touched && bookForm.get('price')?.invalid">
+            {{ getFieldError('price') }}
+          </small>
+        </label>
+
+        <label>
+          <span>Discount Price</span>
+          <input formControlName="discountPrice" type="number" step="0.01" [readonly]="isReadOnlyMode" />
+        </label>
+
+        <label>
+          <span>Rating</span>
+          <input formControlName="rating" type="number" step="0.1" min="0" max="5" [readonly]="isReadOnlyMode" />
+        </label>
+
+        <label>
+          <span>Review Count</span>
+          <input formControlName="reviewCount" type="number" [readonly]="isReadOnlyMode" />
+        </label>
+
+        <label>
+          <span>Publication Date</span>
+          <input formControlName="publicationDate" type="date" [readonly]="isReadOnlyMode" />
+        </label>
+
+        <label>
+          <span>File Size</span>
+          <input formControlName="fileSize" type="text" placeholder="2MB" [readonly]="isReadOnlyMode" />
+        </label>
+
+        <label class="full-width">
+          <span>Description</span>
+          <textarea formControlName="description" rows="3" placeholder="Short description of the book" [readonly]="isReadOnlyMode"></textarea>
+        </label>
+
+        <label class="full-width">
+          <span>Thumbnail URL</span>
+          <input formControlName="thumbnailUrl" type="url" placeholder="https://example.com/image.jpg" [readonly]="isReadOnlyMode" />
+        </label>
+
+        <label class="full-width">
+          <span>Preview URL</span>
+          <input formControlName="previewUrl" type="url" placeholder="https://example.com/preview" [readonly]="isReadOnlyMode" />
+        </label>
+
+        <label class="full-width">
+          <span>Original URL</span>
+          <input formControlName="originalUrl" type="url" placeholder="https://example.com/book" [readonly]="isReadOnlyMode" />
+        </label>
+
+        <label class="full-width">
+          <span>Tags</span>
+          <input formControlName="tags" type="text" placeholder="software,clean code" [readonly]="isReadOnlyMode" />
+        </label>
+      </div>
+
+      <div class="checkbox-grid">
+        <ng-container *ngIf="modalMode !== 'view'; else viewModeCheckboxes">
+          <label><input type="checkbox" formControlName="featured" /> Featured</label>
+          <label><input type="checkbox" formControlName="bestSeller" /> Best Seller</label>
+          <label><input type="checkbox" formControlName="trending" /> Trending</label>
+          <label><input type="checkbox" formControlName="newArrival" /> New Arrival</label>
+        </ng-container>
+
+        <ng-template #viewModeCheckboxes>
+          <div class="read-only-check"><span class="check-box" [class.checked]="bookForm.get('featured')?.value">✓</span> Featured</div>
+          <div class="read-only-check"><span class="check-box" [class.checked]="bookForm.get('bestSeller')?.value">✓</span> Best Seller</div>
+          <div class="read-only-check"><span class="check-box" [class.checked]="bookForm.get('trending')?.value">✓</span> Trending</div>
+          <div class="read-only-check"><span class="check-box" [class.checked]="bookForm.get('newArrival')?.value">✓</span> New Arrival</div>
+        </ng-template>
+      </div>
+
+      <div class="form-message error" *ngIf="apiError">{{ apiError }}</div>
+      <div class="form-message success" *ngIf="successMessage">{{ successMessage }}</div>
+
+      <div class="modal-actions">
+        <button class="secondary-btn clear-btn" type="button" (click)="clearBookForm()" *ngIf="modalMode !== 'view'">Clear All</button>
+        <button class="secondary-btn" type="button" (click)="closeBookModal()">Cancel</button>
+        <button class="primary-btn" type="submit" [disabled]="isSubmitting || isReadOnlyMode" *ngIf="modalMode !== 'view'">
+          {{ submitButtonLabel }}
+        </button>
+      </div>
+    </form>
+  </div>
 </div>
